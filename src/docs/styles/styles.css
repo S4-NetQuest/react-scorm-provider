@@ -1,0 +1,51 @@
+body {
+  background: #42275a;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #734b6d, #42275a);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #734b6d, #42275a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#main-content-container {
+  background-color: #F0EAEE;
+  min-height: 100vh;
+  -webkit-box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.5);
+  -moz-box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.5);
+  box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.5);
+}
+
+.header .logo {
+  text-align: center;
+}
+
+.header h1 {
+  margin-top: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@media screen and (min-width: 550px) {
+  .header h1 {
+    margin-top: 1rem;
+  }
+}
+
+@media screen and (min-width: 886px) {
+  .header h1 {
+    margin-top: 4rem;
+  }
+}
+
+@media screen and (min-width: 1070px) {
+  .header h1 {
+    margin-top: 6rem;
+  }
+}
+
+.section {
+  border-top: 1px solid #fff;
+  margin: 4rem;
+  padding-top: 2rem;
+}
+
+.button {
+  margin: 0.5rem;
+}

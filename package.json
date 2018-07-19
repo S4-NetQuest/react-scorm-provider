@@ -1,0 +1,53 @@
+{
+  "name": "react-scorm-provider",
+  "version": "0.1.0",
+  "description": "React Components to easily enable SCORM API communication in React projects.",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run lib:watch\" \"npm run docs\"",
+    "lib": "babel src/lib -d lib --copy-files",
+    "lib:watch": "babel src/lib -w -d lib --copy-files",
+    "docs": "webpack-dev-server --mode development",
+    "docs:prod": "webpack --mode production"
+  },
+  "keywords": [
+    "react",
+    "scorm",
+    "elearning",
+    "scorm wrapper",
+    "scorm api"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.46",
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.46",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "@babel/preset-react": "^7.0.0-beta.46",
+    "babel-loader": "^8.0.0-beta.0",
+    "concurrently": "^3.5.1",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "^3.1.3"
+  },
+  "author": "Jay Karlsven <j.karlsven@gmail.com>",
+  "homepage": "https://github.com/JayV30/react-scorm-provider",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:JayV30/react-scorm-provider.git"
+  },
+  "dependencies": {
+    "pipwerks-scorm-api-wrapper": "^0.1.2"
+  }
+}

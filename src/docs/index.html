@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="React SCORM Provider Demo">
+  <meta name="author" content="Jay Karlsven">
+  <title>React SCORM Provider Demo</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script>
+    // fake SCORM API as this is not SCORM-packaged
+    window.API = (function(){
+      var data = {
+        "cmi.core.student_id": "000100",
+        "cmi.core.student_name": "Student, Joe",
+        "cmi.core.lesson_location": "",
+        "cmi.core.lesson_status": "not attempted",
+        "cmi.suspend_data": ""
+      };
+      return {
+        LMSInitialize: function() {
+          return "true";
+        },
+        LMSCommit: function() {
+          return "true";
+        },
+        LMSFinish: function() {
+          return "true";
+        },
+        LMSGetValue: function(model) {
+          return data[model] || "";
+        },
+        LMSSetValue: function(model, value) {
+          data[model] = value;
+          return "true";
+        },
+        LMSGetLastError: function() {
+          return "0";
+        },
+        LMSGetErrorString: function(errorCode) {
+          return "No error";
+        },
+        LMSGetDiagnostic: function(errorCode) {
+          return "No error";
+        }
+      };
+    })();
+  </script>
+</body>
+
+</html>
