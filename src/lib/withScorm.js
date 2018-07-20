@@ -5,14 +5,15 @@ function withScorm() {
 
   return function(WrappedComponent) {
 
-    return function(props) {
-
+    const WithScorm = function(props) {
       return (
         <ScoContext.Consumer>
           {value => <WrappedComponent {...props} sco={value} />}
         </ScoContext.Consumer>
       )
     }
+
+    return WithScorm;
   }
 }
 

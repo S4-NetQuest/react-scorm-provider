@@ -1,7 +1,7 @@
 {
   "name": "react-scorm-provider",
-  "version": "0.1.0",
-  "description": "React Components to easily enable SCORM API communication in React projects.",
+  "version": "0.1.1",
+  "description": "Components to easily enable SCORM API communication in React projects.",
   "main": "lib/index.js",
   "scripts": {
     "dev": "concurrently \"npm run lib:watch\" \"npm run docs\"",
@@ -13,9 +13,14 @@
   "keywords": [
     "react",
     "scorm",
+    "scorm1.2",
+    "scorm2004",
+    "lms",
+    "sco",
     "elearning",
-    "scorm wrapper",
-    "scorm api"
+    "e-learning",
+    "wrapper",
+    "api"
   ],
   "license": "MIT",
   "peerDependencies": {
@@ -34,6 +39,8 @@
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "pipwerks-scorm-api-wrapper": "^0.1.2",
+    "prop-types": "^15.6.2",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "style-loader": "^0.21.0",
@@ -46,8 +53,5 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:JayV30/react-scorm-provider.git"
-  },
-  "dependencies": {
-    "pipwerks-scorm-api-wrapper": "^0.1.2"
   }
 }

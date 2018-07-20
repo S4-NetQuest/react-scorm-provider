@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {SCORM} from 'pipwerks-scorm-api-wrapper';
+import { SCORM, debug } from 'pipwerks-scorm-api-wrapper';
+import PropTypes from 'prop-types';
 
 export const ScoContext = React.createContext({
   apiConnected: false,
@@ -62,6 +63,7 @@ class ScormProvider extends Component {
     if (this.state.apiConnected) return;
 
     if (this.props.version) SCORM.version = this.props.version;
+    if (typeof this.props.debug === "boolean") debug.isActive = this.props.debug;
     const scorm = SCORM.init();
     if (scorm) {
       const learnerName = SCORM.get('cmi.core.student_name');
@@ -174,6 +176,11 @@ class ScormProvider extends Component {
       </ScoContext.Provider>
     );
   }
+}
+
+ScormProvider.propTypes = {
+  version: PropTypes.bool,
+  debug: PropTypes.bool,
 }
 
 export default ScormProvider;
