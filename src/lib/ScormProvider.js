@@ -66,9 +66,9 @@ class ScormProvider extends Component {
     if (typeof this.props.debug === "boolean") debug.isActive = this.props.debug;
     const scorm = SCORM.init();
     if (scorm) {
-      const learnerName = SCORM.get('cmi.core.student_name');
-      const completionStatus = SCORM.status('get');
       const version = SCORM.version;
+      const learnerName = version === '1.2' ? SCORM.get('cmi.core.student_name') : SCORM.get('cmi.learner_name');
+      const completionStatus = SCORM.status('get');
       this.setState({
         apiConnected: true,
         learnerName: learnerName,
