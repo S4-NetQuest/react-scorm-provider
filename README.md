@@ -1,9 +1,5 @@
 # React SCORM Provider
 
-*WARNING: this project is still in active initial development and NOT for production use. I saw no adequate stand-alone SCORM React components so I decided to create one but it is not currently complete. It will work at the most basic level but it is currently untested and very simple. (Although using the get and set methods should cover nearly all uses - you just have to provide your own implementations)*
-
----
-
 ### Overview
 
 React-scorm-provider (RSP) is a set of React Components that simplify the inclusion of the [SCORM API](https://scorm.com/scorm-explained/) into your React projects. It utilizes the great SCORM API wrapper from [pipwerks](https://github.com/pipwerks/scorm-api-wrapper). Use RSP to easily add SCORM capabilities to your learning modules, resources, games, or *any* web content you are creating with React.
