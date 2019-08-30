@@ -1,3 +1,8 @@
+# 0.1.4 (Aug 30, 2019)
+
+### Maintenance
+* Update vulnerable dependencies
+
 # 0.1.3 (May 3, 2019)
 
 ### Bug Fix
