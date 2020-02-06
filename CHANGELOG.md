@@ -1,3 +1,9 @@
+# 0.1.5 (Feb 6, 2020)
+* Correct prop types for ScormProvider
+* Remove unnecessary console log calls
+* Update vulnerable dependencies
+* Update License copyright year
+
 # 0.1.4 (Aug 30, 2019)
 
 ### Maintenance
@@ -11,7 +17,7 @@
 
 ### Maintenance
 * Removal of warning at top of README.md
-* Update Licence copyright year
+* Update License copyright year
 * Correct the CHANGELOG.md formatting
 
 # 0.1.2 (July 24, 2018)

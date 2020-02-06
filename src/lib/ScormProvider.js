@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { SCORM, debug } from 'pipwerks-scorm-api-wrapper';
 import PropTypes from 'prop-types';
+import autoBind from 'react-autobind';
+import { SCORM, debug } from 'pipwerks-scorm-api-wrapper';
 
 export const ScoContext = React.createContext({
   apiConnected: false,
@@ -19,16 +20,7 @@ class ScormProvider extends Component {
   constructor(props) {
     super(props);
 
-    console.log('ScormProvider constructor called!');
-
-    // bind class methods as needed
-    this.getSuspendData = this.getSuspendData.bind(this);
-    this.setSuspendData = this.setSuspendData.bind(this);
-    this.setStatus = this.setStatus.bind(this);
-    this.createScormAPIConnection = this.createScormAPIConnection.bind(this);
-    this.closeScormAPIConnection = this.closeScormAPIConnection.bind(this);
-    this.set = this.set.bind(this);
-    this.get = this.get.bind(this);
+    autoBind(this);
 
     // define state, including methods to be passed to context consumers
     // this entire state will be passed as 'sco' to consumers
@@ -47,19 +39,16 @@ class ScormProvider extends Component {
   }
 
   componentDidMount() {
-    console.log('ScormProvider componentDidMount called!');
     this.createScormAPIConnection();
     window.addEventListener("beforeunload", this.closeScormAPIConnection);
   }
 
   componentWillUnmount() {
-    console.log('ScormProvider componentWillUnmount called!');
     this.closeScormAPIConnection();
     window.removeEventListener("beforeunload", this.closeScormAPIConnection);
   }
 
   createScormAPIConnection() {
-    console.log('ScormProvider createScormAPIConnection method called!');
     if (this.state.apiConnected) return;
 
     if (this.props.version) SCORM.version = this.props.version;
@@ -79,12 +68,11 @@ class ScormProvider extends Component {
       });
     } else {
       // could not create the SCORM API connection
-      console.log("ScormProvider init error: could not create the SCORM API connection");
+      console.error("ScormProvider init error: could not create the SCORM API connection");
     }
   }
 
   closeScormAPIConnection() {
-    console.log('ScormProvider closeScormAPIConnection method called!');
     if (!this.state.apiConnected) return;
 
     this.setSuspendData();
@@ -101,7 +89,7 @@ class ScormProvider extends Component {
       });
     } else {
       // could not close the SCORM API connection
-      console.log("ScormProvider error: could not close the API connection");
+      console.error("ScormProvider error: could not close the API connection");
     }
   }
 
@@ -129,14 +117,14 @@ class ScormProvider extends Component {
       });
     } else {
       // error setting suspend data
-      console.log("ScormProvider setStatus error: could not set the suspend data provided");
+      console.error("ScormProvider setStatus error: could not set the suspend data provided");
     }
   }
 
   setStatus(status) {
     if (!this.state.apiConnected) return;
 
-    const validStatuses = ["passed", "completed", "failed", "incomplete", "browsed", "not attempted"];
+    const validStatuses = ["passed", "completed", "failed", "incomplete", "browsed", "not attempted", "unknown"];
     if (validStatuses.includes(status)) {
       let success = SCORM.status("set", status);
       if (success) {
@@ -147,7 +135,7 @@ class ScormProvider extends Component {
         });
       } else {
         // error setting status
-        console.log("ScormProvider setStatus error: could not set the status provided");
+        console.error("ScormProvider setStatus error: could not set the status provided");
       }
     }
   }
@@ -160,7 +148,7 @@ class ScormProvider extends Component {
       SCORM.save();
     } else {
       // error setting value
-      console.log("ScormProvider set error: could not set:", param, val);
+      console.error("ScormProvider set error: could not set:", param, val);
     }
   }
 
@@ -179,7 +167,7 @@ class ScormProvider extends Component {
 }
 
 ScormProvider.propTypes = {
-  version: PropTypes.bool,
+  version: PropTypes.oneOf(['1.2', '2004']),
   debug: PropTypes.bool,
 }
 
