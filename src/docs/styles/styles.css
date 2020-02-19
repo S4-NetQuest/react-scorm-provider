@@ -49,3 +49,27 @@ body {
 .button {
   margin: 0.5rem;
 }
+
+.sponsor-info {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.sponsor-info > p {
+  margin: 0 1rem;
+}
+
+.sponsor-info > a {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sponsor-info > a:hover,
+.sponsor-info > a:focus {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.sponsor-info > a > img {
+  display: block;
+  max-width: 250px;
+}

@@ -1,14 +1,16 @@
 # React SCORM Provider
+Presented by
+<a href="https://s4netquest.com"><img src="https://s4-netquest.github.io/react-scorm-provider/images/s4-logo.png" alt="S4 NetQuest Logo" style="max-width: 250px;" /></a>
 
 ### Overview
 
 React-scorm-provider (RSP) is a set of React Components that simplify the inclusion of the [SCORM API](https://scorm.com/scorm-explained/) into your React projects. It utilizes the great SCORM API wrapper from [pipwerks](https://github.com/pipwerks/scorm-api-wrapper). Use RSP to easily add SCORM capabilities to your learning modules, resources, games, or *any* web content you are creating with React.
 
-Keep in mind that this project does not include any kind of packaging or bundling for SCORM. It simply enables SCORM API calls inside your React code.
+Keep in mind that this project does not include any kind of packaging or bundling for SCORM. It simply enables SCORM API calls inside your React code. For SCORM packaging your React app build, check out [simple-scorm-packager](https://github.com/lmihaidaniel/simple-scorm-packager).
 
 There are two major components of RSP, `ScormProvider` and `withScorm`.
 
-[View the live demo](https://jayv30.github.io/react-scorm-provider)
+[View the live demo](https://s4-netquest.github.io/react-scorm-provider)
 
 ---
 

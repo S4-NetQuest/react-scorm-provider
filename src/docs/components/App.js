@@ -3,6 +3,7 @@ import ScormProvider from '../../lib/index';
 import Learner from './Learner';
 import ApiStatus from './ApiStatus';
 import logo from '../img/rsp-logo.png';
+import s4logo from '../img/s4-logo.png';
 
 const App = () => {
   return (
@@ -15,17 +16,22 @@ const App = () => {
             </div>
             <div className="nine columns">
               <h1>React SCORM Provider</h1>
+              <div className="sponsor-info">
+                <p>Presented by:</p>
+                <a href="https://s4netquest.com">
+                  <img src={s4logo} alt="S4 NetQuest Logo"/>
+                </a>
+              </div>
             </div>
           </div>
         </section>
         <section className="section">
-
           <h2>What is this?</h2>
           <p>
             React-scorm-provider (RSP) is a set of React Components that simplify the inclusion of the <a href="https://scorm.com/scorm-explained/" target="__blank" rel="noreferrer noopener">SCORM API</a> into your React projects. It utilizes the great SCORM API wrapper from <a href="https://github.com/pipwerks/scorm-api-wrapper" target="__blank" rel="noreferrer noopener">pipwerks</a>. Use RSP to easily add SCORM capabilities to your learning modules, resources, games, or any web content you are creating with React.
           </p>
           <p>
-            Keep in mind that this project does not include any kind of packaging or bundling for SCORM. It simply enables SCORM API calls inside your React code.
+            Keep in mind that this project does not include any kind of packaging or bundling for SCORM. It simply enables SCORM API calls inside your React code. For SCORM packaging your React app build, check out <a href="https://github.com/lmihaidaniel/simple-scorm-packager" target="__blank" rel="noreferrer noopener">simple-scorm-packager</a>.
           </p>
           <p>
             There are two major components of RSP, <code>ScormProvider</code> and <code>withScorm</code>.
@@ -191,7 +197,7 @@ export default App;
             This demo website has RSP integrated. However, this is a website, not a SCORM package. Therefore this example is somewhat limited. A fake SCORM API has been included on this page to respond to API calls. Keep in mind the React components provided by this RSP do nothing to properly prepare and package your application as a SCORM compliant LMS package.
           </p>
           <p>
-            Check out the sections below to see some very basic values retrieved from the API, and some buttons that can set values. My personal preference is to use suspend_data as a key:value store so there are specific methods for serializing/deserializing objects to suspend_data. See the <a href="https://github.com/JayV30/react-scorm-provider" target="__blank" rel="noreferrer noopener">documentation</a> for more information.
+            Check out the sections below to see some very basic values retrieved from the API, and some buttons that can set values. My personal preference is to use suspend_data as a key:value store so there are specific methods for serializing/deserializing objects to suspend_data. See the <a href="https://github.com/S4-NetQuest/react-scorm-provider" target="__blank" rel="noreferrer noopener">documentation</a> for more information.
           </p>
         </section>
         <Learner />
