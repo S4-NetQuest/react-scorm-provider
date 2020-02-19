@@ -1,5 +1,6 @@
 # React SCORM Provider
 Presented by
+
 <a href="https://s4netquest.com"><img src="https://s4-netquest.github.io/react-scorm-provider/images/s4-logo.png" alt="S4 NetQuest Logo" style="max-width: 250px;" /></a>
 
 ### Overview
