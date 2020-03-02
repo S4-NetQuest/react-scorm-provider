@@ -50,6 +50,11 @@ body {
   margin: 0.5rem;
 }
 
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .sponsor-info {
   width: 100%;
   display: flex;

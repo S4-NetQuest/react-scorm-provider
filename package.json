@@ -1,6 +1,6 @@
 {
   "name": "react-scorm-provider",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Components to easily enable SCORM API communication in React projects.",
   "main": "lib/index.js",
   "scripts": {

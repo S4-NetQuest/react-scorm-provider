@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import autoBind from 'react-autobind';
 import { SCORM, debug } from 'pipwerks-scorm-api-wrapper';
 
+function isNumOrString(item) {
+  if (typeof item === 'number') return true;
+  if (typeof item === 'string' && item.length > 0) return true;
+  return false;
+}
+
 export const ScoContext = React.createContext({
   apiConnected: false,
   learnerName: '',
@@ -20,22 +26,17 @@ class ScormProvider extends Component {
   constructor(props) {
     super(props);
 
-    autoBind(this);
-
     // define state, including methods to be passed to context consumers
-    // this entire state will be passed as 'sco' to consumers
+    // this state will be passed in 'sco' to consumers
     this.state = {
       apiConnected: false,
       learnerName: '',
       completionStatus: 'incomplete',
       suspendData: {},
-      scormVersion: '',
-      getSuspendData: this.getSuspendData,
-      setSuspendData: this.setSuspendData,
-      setStatus: this.setStatus,
-      set: this.set,
-      get: this.get
+      scormVersion: ''
     };
+
+    autoBind(this);
   }
 
   componentDidMount() {
@@ -94,62 +95,97 @@ class ScormProvider extends Component {
   }
 
   getSuspendData() {
-    if (!this.state.apiConnected) return;
+    return new Promise((resolve, reject) => {
 
-    const data = SCORM.get('cmi.suspend_data');
-    const suspendData = data && data.length > 0 ? JSON.parse(data) : {};
-    this.setState({
-      suspendData
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const data = SCORM.get('cmi.suspend_data');
+      const suspendData = data && data.length > 0 ? JSON.parse(data) : {};
+      this.setState({
+        suspendData
+      }, () => {
+        return resolve(this.state.suspendData);
+      });
+
     });
   }
 
   setSuspendData(key, val) {
-    if (!this.state.apiConnected) return;
+    return new Promise((resolve, reject) => {
 
-    let currentData = {...this.state.suspendData} || {};
-    if (key && val) currentData[key] = val;
-    let success = SCORM.set('cmi.suspend_data', JSON.stringify(currentData));
-    if (success) {
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      let currentData = {...this.state.suspendData} || {};
+      if (isNumOrString(key) && isNumOrString(val)) currentData[key] = val;
+      const success = SCORM.set('cmi.suspend_data', JSON.stringify(currentData));
+      if (!success) return reject('could not set the suspend data provided');
       this.setState({
         suspendData: currentData
       }, () => {
         SCORM.save();
+        return resolve(this.state.suspendData);
       });
-    } else {
-      // error setting suspend data
-      console.error("ScormProvider setStatus error: could not set the suspend data provided");
-    }
+    });
   }
 
-  setStatus(status) {
-    if (!this.state.apiConnected) return;
+  setStatus(status, deferSaveCall) {
+    return new Promise((resolve, reject) => {
 
-    const validStatuses = ["passed", "completed", "failed", "incomplete", "browsed", "not attempted", "unknown"];
-    if (validStatuses.includes(status)) {
-      let success = SCORM.status("set", status);
-      if (success) {
-        this.setState({
-          completionStatus: status
-        }, () => {
-          SCORM.save();
-        });
-      } else {
-        // error setting status
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const validStatuses = ["passed", "completed", "failed", "incomplete", "browsed", "not attempted", "unknown"];
+      if (!validStatuses.includes(status)) {
         console.error("ScormProvider setStatus error: could not set the status provided");
+        return reject('could not set the status provided');
       }
-    }
+
+      const success = SCORM.status("set", status);
+      if (!success) return reject('could not set the status provided');
+      this.setState({
+        completionStatus: status
+      }, () => {
+        if (!deferSaveCall) SCORM.save();
+        return resolve(this.state.completionStatus);
+      });
+
+    });
   }
 
-  set(param, val) {
-    if (!this.state.apiConnected) return;
+  setScore(scoreObj) {
+    return new Promise((resolve, reject) => {
 
-    let success = SCORM.set(param, val);
-    if (success) {
-      SCORM.save();
-    } else {
-      // error setting value
-      console.error("ScormProvider set error: could not set:", param, val);
-    }
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const { value, min, max, status } = scoreObj;
+      const promiseArr = [];
+      if (typeof value === 'number') promiseArr.push(this.set('cmi.score.raw', value, true));
+      if (typeof min === 'number') promiseArr.push(this.set('cmi.score.min', min, true));
+      if (typeof max === 'number') promiseArr.push(this.set('cmi.score.max', max, true));
+      if (typeof status === 'string') promiseArr.push(this.setStatus(status, true));
+
+      Promise.all(promiseArr)
+        .then(values => {
+          SCORM.save();
+          return resolve(values);
+        })
+        .catch(err => {
+          return reject('could not save the score object provided');
+        });
+
+    });
+  }
+
+  set(param, val, deferSaveCall) {
+    return new Promise((resolve, reject) => {
+
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const success = SCORM.set(param, val);
+      if (!success) return reject(`could not set: { ${param}: ${val}}`);
+      if (!deferSaveCall) SCORM.save();
+      return resolve([param, val]);
+
+    });
   }
 
   get(param) {
@@ -158,8 +194,19 @@ class ScormProvider extends Component {
   }
 
   render() {
+
+    const val = {
+      ...this.state,
+      getSuspendData: this.getSuspendData,
+      setSuspendData: this.setSuspendData,
+      setStatus: this.setStatus,
+      setScore: this.setScore,
+      set: this.set,
+      get: this.get
+    }
+
     return (
-      <ScoContext.Provider value={this.state}>
+      <ScoContext.Provider value={val}>
         {this.props.children}
       </ScoContext.Provider>
     );

@@ -5,7 +5,7 @@ Presented by
 
 ### Overview
 
-React-scorm-provider (RSP) is a set of React Components that simplify the inclusion of the [SCORM API](https://scorm.com/scorm-explained/) into your React projects. It utilizes the great SCORM API wrapper from [pipwerks](https://github.com/pipwerks/scorm-api-wrapper). Use RSP to easily add SCORM capabilities to your learning modules, resources, games, or *any* web content you are creating with React.
+React-scorm-provider (RSP) is a set of React Components that simplify the inclusion of the [SCORM API](https://scorm.com/scorm-explained/) into your React projects. It utilizes the great SCORM API wrapper from [pipwerks](https://github.com/pipwerks/scorm-api-wrapper). Use RSP to easily add SCORM capabilities to your learning modules, resources, games, or *any* web content you are creating with React. RSP in its current form is meant for single SCO packages and relatively simple communications to the LMS, however it can easily be extended and modified to work for more complex projects.
 
 Keep in mind that this project does not include any kind of packaging or bundling for SCORM. It simply enables SCORM API calls inside your React code. For SCORM packaging your React app build, check out [simple-scorm-packager](https://github.com/lmihaidaniel/simple-scorm-packager).
 
@@ -77,19 +77,22 @@ The 'sco' prop object contains the following properties:
   scormVersion: String,
 
   // calling this function will update props.sco.suspendData with the current suspend_data from the LMS
-  getSuspendData: Function (),
+  getSuspendData: Function () returns a Promise,
 
   // this function takes the required key and value arguments and merges them into the suspendData Object, overwriting the value if the key already exists. It then stringifies the object and saves it to the LMS as suspend_data
-  setSuspendData: Function (key, val),
+  setSuspendData: Function (key, val) returns a Promise,
 
-  // sends an updated course status to the LMS, accpets one of: "passed", "completed", "failed", "incomplete", "browsed", "not attempted"
-  setStatus: Function (string),
+  // sends an updated course status to the LMS, accepts one of: "passed", "completed", "failed", "incomplete", "browsed", "not attempted"
+  setStatus: Function (string) returns a Promise,
+
+  // sends a score to the LMS via an object argument -- { value: Number - score (required), min: Number - min score (optional), max: Number - max score (optional), status: String - same as setStatus method (optional) }
+  setScore: Function ({ value, min, max, status }) returns a Promise,
 
   // sets a SCORM value, ex: props.sco.set('cmi.score.scaled', 100)
-  set: Function (string, val),
+  set: Function (string, val) returns a Promise,
 
   // gets a SCORM value from the LMS, ex: props.sco.get('cmi.score.scaled')
-  get: Function (string)
+  get: Function (string) returns the LMS value
 }
 ```
 
