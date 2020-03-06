@@ -12,11 +12,12 @@ function isNumOrString(item) {
 export const ScoContext = React.createContext({
   apiConnected: false,
   learnerName: '',
-  completionStatus: 'incomplete',
+  completionStatus: 'unknown',
   suspendData: {},
   scormVersion: '',
   getSuspendData: () => {},
   setSuspendData: () => {},
+  clearSuspendData: () => {},
   setStatus: () => {},
   set: () => {},
   get: () => {}
@@ -26,12 +27,11 @@ class ScormProvider extends Component {
   constructor(props) {
     super(props);
 
-    // define state, including methods to be passed to context consumers
     // this state will be passed in 'sco' to consumers
     this.state = {
       apiConnected: false,
       learnerName: '',
-      completionStatus: 'incomplete',
+      completionStatus: 'unknown',
       suspendData: {},
       scormVersion: ''
     };
@@ -69,7 +69,7 @@ class ScormProvider extends Component {
       });
     } else {
       // could not create the SCORM API connection
-      console.error("ScormProvider init error: could not create the SCORM API connection");
+      if (this.props.debug) console.error("ScormProvider init error: could not create the SCORM API connection");
     }
   }
 
@@ -84,13 +84,13 @@ class ScormProvider extends Component {
       this.setState({
         apiConnected: false,
         learnerName: '',
-        completionStatus: 'incomplete',
+        completionStatus: 'unknown',
         suspendData: {},
         scormVersion: ''
       });
     } else {
       // could not close the SCORM API connection
-      console.error("ScormProvider error: could not close the API connection");
+      if (this.props.debug) console.error("ScormProvider error: could not close the API connection");
     }
   }
 
@@ -128,6 +128,22 @@ class ScormProvider extends Component {
     });
   }
 
+  clearSuspendData() {
+    return new Promise((resolve, reject) => {
+
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const success = SCORM.set('cmi.suspend_data', JSON.stringify({}));
+      if (!success) return reject('could not clear suspend data');
+      this.setState({
+        suspendData: {}
+      }, () => {
+        SCORM.save();
+        return resolve(this.state.suspendData);
+      });
+    });
+  }
+
   setStatus(status, deferSaveCall) {
     return new Promise((resolve, reject) => {
 
@@ -135,7 +151,7 @@ class ScormProvider extends Component {
 
       const validStatuses = ["passed", "completed", "failed", "incomplete", "browsed", "not attempted", "unknown"];
       if (!validStatuses.includes(status)) {
-        console.error("ScormProvider setStatus error: could not set the status provided");
+        if (this.props.debug) console.error("ScormProvider setStatus error: could not set the status provided");
         return reject('could not set the status provided');
       }
 
@@ -157,10 +173,11 @@ class ScormProvider extends Component {
       if (!this.state.apiConnected) return reject('SCORM API not connected');
 
       const { value, min, max, status } = scoreObj;
+      const coreStr = this.state.scormVersion === '1.2' ? '.core' : ''
       const promiseArr = [];
-      if (typeof value === 'number') promiseArr.push(this.set('cmi.score.raw', value, true));
-      if (typeof min === 'number') promiseArr.push(this.set('cmi.score.min', min, true));
-      if (typeof max === 'number') promiseArr.push(this.set('cmi.score.max', max, true));
+      if (typeof value === 'number') promiseArr.push(this.set(`cmi${coreStr}.score.raw`, value, true));
+      if (typeof min === 'number') promiseArr.push(this.set(`cmi${coreStr}.score.min`, min, true));
+      if (typeof max === 'number') promiseArr.push(this.set(`cmi${coreStr}.score.max`, max, true));
       if (typeof status === 'string') promiseArr.push(this.setStatus(status, true));
 
       Promise.all(promiseArr)
@@ -181,7 +198,7 @@ class ScormProvider extends Component {
       if (!this.state.apiConnected) return reject('SCORM API not connected');
 
       const success = SCORM.set(param, val);
-      if (!success) return reject(`could not set: { ${param}: ${val}}`);
+      if (!success) return reject(`could not set: { ${param}: ${val} }`);
       if (!deferSaveCall) SCORM.save();
       return resolve([param, val]);
 
@@ -199,6 +216,7 @@ class ScormProvider extends Component {
       ...this.state,
       getSuspendData: this.getSuspendData,
       setSuspendData: this.setSuspendData,
+      clearSuspendData: this.clearSuspendData,
       setStatus: this.setStatus,
       setScore: this.setScore,
       set: this.set,

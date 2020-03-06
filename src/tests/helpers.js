@@ -40,6 +40,9 @@ function setupSCORM_1(global, d = {}) {
         return data[model] || "";
       },
       LMSSetValue: function(model, value) {
+        // for testing invalid entries, use this read-only model (all others will return true)
+        if (model === 'cmi.core.student_name') return "false";
+
         data[model] = value;
         return "true";
       },
@@ -59,10 +62,10 @@ function setupSCORM_1(global, d = {}) {
 function setupSCORM_2004(global, d = {}) {
   global.API_1484_11 = (function(){
     var data = {
-      "cmi.core.student_id": "000001",
-      "cmi.core.student_name": "Student, Joe",
-      "cmi.core.lesson_location": "",
-      "cmi.core.lesson_status": "not attempted",
+      "cmi.learner_id": "000001",
+      "cmi.learner_name": "Student, Joe",
+      "cmi.location": "",
+      "cmi.completion_status": "not attempted",
       "cmi.suspend_data": "",
       ...d
     };
@@ -80,6 +83,9 @@ function setupSCORM_2004(global, d = {}) {
         return data[model] || "";
       },
       SetValue: function(model, value) {
+        // for testing invalid entries, use this read-only model (all others will return true)
+        if (model === 'cmi.learner_name') return "false";
+
         data[model] = value;
         return "true";
       },

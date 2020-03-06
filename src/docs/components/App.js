@@ -111,6 +111,9 @@ export default App;`}
   // this function takes the required key and value arguments and merges them into the suspendData Object, overwriting the value if the key already exists. It then stringifies the object and saves it to the LMS as suspend_data
   setSuspendData: Function (key, val) returns a Promise,
 
+  // resets the suspend_data to an empty object, clearing any existing key:value pairs
+  clearSuspendData: Function () returns a Promise,
+
   // sends an updated course status to the LMS, accepts one of: "passed", "completed", "failed", "incomplete", "browsed", "not attempted"
   setStatus: Function (string) returns a Promise,
 

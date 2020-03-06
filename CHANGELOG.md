@@ -1,11 +1,14 @@
-# 0.2.0 (March 2, 2020)
+# 0.2.0 (March 6, 2020)
 * add setScore method
+* add clearSuspendData method
 * the following methods now return promises
   * getSuspendData
   * setSuspendData
+  * clearSuspendData
   * setStatus
   * setScore
   * set
+* add jest / enzyme test suite
 
 # 0.1.6 (Feb 19, 2020)
 * Transfer repository ownership to S4 NetQuest
