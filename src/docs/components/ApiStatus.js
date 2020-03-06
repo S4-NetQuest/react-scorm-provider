@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import autoBind from 'react-autobind';
 import { withScorm } from '../../lib/index';
 
 class ApiStatus extends Component {
@@ -7,12 +8,16 @@ class ApiStatus extends Component {
 
     this.state = {
       key: '',
-      val: ''
+      val: '',
+      score: {
+        value: 0,
+        min: 0,
+        max: 100,
+        status: "0"
+      }
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onKeyChange = this.onKeyChange.bind(this);
-    this.onValChange = this.onValChange.bind(this);
+    autoBind(this);
   }
 
   handleSubmit(e) {
@@ -34,6 +39,27 @@ class ApiStatus extends Component {
     this.setState({
       val: e.target.value
     });
+  }
+
+  onScoreChange(e) {
+    let field = e.target.name;
+    let score = { ...this.state.score }
+    score[field] = field === 'status' ? e.target.value : Number(e.target.value);
+    this.setState({
+      score
+    });
+  }
+
+  handleScoreSubmit(e) {
+    e.preventDefault();
+    if (this.state.score.status === "0") return;
+    this.props.sco.setScore(this.state.score)
+      .then(res => {
+        alert(`Successfully set the score: ${JSON.stringify(res)}`);
+      })
+      .catch(err => {
+        alert('Something went wrong... score not set.');
+      });
   }
 
   render() {
@@ -89,6 +115,39 @@ class ApiStatus extends Component {
           </div>
           <div className="row">
             <button type="submit" className="button-primary">Submit New key:value pair</button>
+          </div>
+        </form>
+        <hr/>
+        <p>Send a score to the API</p>
+        <form onSubmit={this.handleScoreSubmit}>
+          <div className="row">
+            <div className="three columns">
+              <label htmlFor="value">Score</label>
+              <input type="number" className="u-full-width" name="value" value={this.state.score.value} placeholder="Enter a Score" onChange={this.onScoreChange} />
+            </div>
+            <div className="three columns">
+              <label htmlFor="min">Min Score</label>
+              <input type="number" className="u-full-width" name="min" value={this.state.score.min} placeholder="Enter a Min Score" onChange={this.onScoreChange} />
+            </div>
+            <div className="three columns">
+              <label htmlFor="max">Max Score</label>
+              <input type="number" className="u-full-width" name="max" value={this.state.score.max} placeholder="Enter a Max Score" onChange={this.onScoreChange} />
+            </div>
+            <div className="three columns">
+              <label htmlFor="status">Status</label>
+              <select className="u-full-width" name="status" value={this.state.score.status} onChange={this.onScoreChange}>
+                <option disabled value="0">-- select status --</option>
+                <option value="passed">Passed</option>
+                <option value="completed">Completed</option>
+                <option value="failed">Failed</option>
+                <option value="incomplete">Incomplete</option>
+                <option value="browsed">Browsed</option>
+                <option value="not attempted">Not Attempted</option>
+              </select>
+            </div>
+          </div>
+          <div className="row">
+            <button type="submit" className="button-primary" disabled={this.state.score.status === "0"}>Submit Score</button>
           </div>
         </form>
       </section>
