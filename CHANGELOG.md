@@ -1,3 +1,6 @@
+# 0.2.1 (March 9, 2020)
+* fix default context to add setScore method
+
 # 0.2.0 (March 6, 2020)
 * add setScore method
 * add clearSuspendData method

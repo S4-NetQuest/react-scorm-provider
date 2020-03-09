@@ -19,6 +19,7 @@ export const ScoContext = React.createContext({
   setSuspendData: () => {},
   clearSuspendData: () => {},
   setStatus: () => {},
+  setScore: () => {},
   set: () => {},
   get: () => {}
 });
