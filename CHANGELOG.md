@@ -1,3 +1,6 @@
+# 0.2.2 (March 9, 2020)
+* remove value validation check in setSuspendData method
+
 # 0.2.1 (March 9, 2020)
 * fix default context to add setScore method
 

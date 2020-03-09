@@ -117,7 +117,7 @@ class ScormProvider extends Component {
       if (!this.state.apiConnected) return reject('SCORM API not connected');
 
       let currentData = {...this.state.suspendData} || {};
-      if (isNumOrString(key) && isNumOrString(val)) currentData[key] = val;
+      if (isNumOrString(key)) currentData[key] = val;
       const success = SCORM.set('cmi.suspend_data', JSON.stringify(currentData));
       if (!success) return reject('could not set the suspend data provided');
       this.setState({
