@@ -1,3 +1,6 @@
+# 0.2.3 (March 16, 2020)
+* Security updates (dependencies)
+
 # 0.2.2 (March 9, 2020)
 * remove value validation check in setSuspendData method
 
