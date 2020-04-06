@@ -1,3 +1,6 @@
+# 0.2.4 (April 6, 2020)
+* Security updates (dependencies)
+
 # 0.2.3 (March 16, 2020)
 * Security updates (dependencies)
 
