@@ -12,6 +12,7 @@ function isNumOrString(item) {
 export const ScoContext = React.createContext({
   apiConnected: false,
   learnerName: '',
+  location: '',
   completionStatus: 'unknown',
   suspendData: {},
   scormVersion: '',
@@ -59,11 +60,13 @@ class ScormProvider extends Component {
     if (scorm) {
       const version = SCORM.version;
       const learnerName = version === '1.2' ? SCORM.get('cmi.core.student_name') : SCORM.get('cmi.learner_name');
+      const location = version === '1.2' ? SCORM.get('cmi.core.lesson_location') : SCORM.get('cmi.location');
       const completionStatus = SCORM.status('get');
       this.setState({
         apiConnected: true,
-        learnerName: learnerName,
-        completionStatus: completionStatus,
+        learnerName,
+        location,
+        completionStatus,
         scormVersion: version
       }, () => {
         this.getSuspendData();
@@ -85,6 +88,7 @@ class ScormProvider extends Component {
       this.setState({
         apiConnected: false,
         learnerName: '',
+        location: '',
         completionStatus: 'unknown',
         suspendData: {},
         scormVersion: ''
@@ -93,6 +97,22 @@ class ScormProvider extends Component {
       // could not close the SCORM API connection
       if (this.props.debug) console.error("ScormProvider error: could not close the API connection");
     }
+  }
+
+  setLocation(newLocation) {
+    return new Promise((resolve, reject) => {
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+
+      const locationPath = version === '1.2' ? 'cmi.core.lesson_location' : 'cmi.location';
+      const success = SCORM.set(locationPath, newLocation);
+      if (!success) return reject('could not set the location provided');
+      this.setState({
+        location: newLocation
+      }, () => {
+        SCORM.save();
+        return resolve(this.state.location);
+      });
+    });
   }
 
   getSuspendData() {
@@ -215,6 +235,7 @@ class ScormProvider extends Component {
 
     const val = {
       ...this.state,
+      setLocation: this.setLocation,
       getSuspendData: this.getSuspendData,
       setSuspendData: this.setSuspendData,
       clearSuspendData: this.clearSuspendData,
