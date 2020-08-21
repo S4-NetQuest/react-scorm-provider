@@ -14,8 +14,10 @@ export const ScoContext = React.createContext({
   learnerName: '',
   location: '',
   completionStatus: 'unknown',
+  objectives: [],
   suspendData: {},
   scormVersion: '',
+  loadObjectives: () => {},
   getSuspendData: () => {},
   setSuspendData: () => {},
   clearSuspendData: () => {},
@@ -34,6 +36,7 @@ class ScormProvider extends Component {
       apiConnected: false,
       learnerName: '',
       completionStatus: 'unknown',
+      objectives: [],
       suspendData: {},
       scormVersion: ''
     };
@@ -69,6 +72,7 @@ class ScormProvider extends Component {
         completionStatus,
         scormVersion: version
       }, () => {
+        this.loadObjectives();
         this.getSuspendData();
       });
     } else {
@@ -114,6 +118,72 @@ class ScormProvider extends Component {
         SCORM.save();
         return resolve(this.state.location);
       });
+    });
+  }
+
+  loadObjectives() {
+    return new Promise((resolve, reject) => {
+      let objectives = [];
+
+      const size = parseInt(SCORM.get('cmi.objectives._count'));
+      if (!isNaN(size)) {
+        for (let i = 0; i < size; i++) {
+          const id = SCORM.get(`cmi.objectives.${i}.id`);
+          const raw = parseInt(SCORM.get(`cmi.objectives.${i}.score.raw`));
+          const min = parseInt(SCORM.get(`cmi.objectives.${i}.score.min`));
+          const max = parseInt(SCORM.get(`cmi.objectives.${i}.score.max`));
+          const status = this.state.scormVersion === '1.2' ?
+            SCORM.get(`cmi.objectives.${i}.status`) :
+            SCORM.get(`cmi.objectives.${i}.completion_status`);
+          objectives.push({ id, score: { raw, min, max }, status });
+        }
+      }
+
+      this.setState({
+        objectives
+      }, () => {
+        return resolve(this.state.objectives);
+      });
+    });
+  }
+
+  setObjective(id, raw, min, max, status) {
+    return new Promise((resolve, reject) => {
+      let index = this.state.objectives.findIndex(objective => objective.id === id);
+      let newObjective = false;
+      if (index === -1) {
+        index = parseInt(SCORM.get('cmi.objectives._count'));
+        newObjective = true;
+      }
+
+      const promiseArr = [];
+      if (typeof id === 'string') promiseArr.push(this.set(`cmi.objectives.${index}.id`, id, true));
+      if (typeof raw === 'number') promiseArr.push(this.set(`cmi.objectives.${index}.score.raw`, raw, true));
+      if (typeof min === 'number') promiseArr.push(this.set(`cmi.objectives.${index}.score.min`, min, true));
+      if (typeof max === 'number') promiseArr.push(this.set(`cmi.objectives.${index}.score.max`, max, true));
+      const statusField = this.state.scormVersion === '1.2' ? 'status' : 'completion_status';
+      if (typeof status === 'string') promiseArr.push(this.set(`cmi.objectives.${index}.${statusField}`, status, true));
+
+      Promise.all(promiseArr)
+        .then(() => {
+          SCORM.save();
+
+          let newList = [...this.state.objectives];
+          if (newObjective) {
+            newList = [...newList, { id, score: { raw, min, max }, status }];
+          } else {
+            newList[index].score.raw = raw;
+            newList[index].status = status;
+          }
+
+          this.setState({ objectives: newList });
+
+          return resolve(newList);
+        })
+        .catch(err => {
+          console.log(err);
+          return reject('could not save the objective provided');
+        });
     });
   }
 
@@ -238,6 +308,7 @@ class ScormProvider extends Component {
     const val = {
       ...this.state,
       setLocation: this.setLocation,
+      setObjective: this.setObjective,
       getSuspendData: this.getSuspendData,
       setSuspendData: this.setSuspendData,
       clearSuspendData: this.clearSuspendData,
