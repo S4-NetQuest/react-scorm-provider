@@ -107,8 +107,7 @@ class ScormProvider extends Component {
     return new Promise((resolve, reject) => {
       if (!this.state.apiConnected) return reject('SCORM API not connected');
 
-      if (this.props.version) SCORM.version = this.props.version;
-      const locationPath = SCORM.version === '1.2' ? 'cmi.core.lesson_location' : 'cmi.location';
+      const locationPath = this.state.scormVersion === '1.2' ? 'cmi.core.lesson_location' : 'cmi.location';
       
       SCORM.set(locationPath, newLocation);
       
